@@ -9,11 +9,12 @@ public class main{
         System.out.println("Starting on the white face with green on the bottom:");
         for(int x = 0; x < white.length;x++){
             for(int y = 0; y < white[0].length;y++){
-                if(x != 1 && y !=  1){
-                    white[x][y] = scn.nextLine();
+                System.out.println("X: "+x+"Y: "+y);
+                if(x == 1 && y == 1){
+                    white[1][1] = "w";
                 }
                 else{
-                    white[1][1] = "w";
+                    white[x][y] = scn.nextLine();
                 }
             }
         }
@@ -22,11 +23,11 @@ public class main{
         System.out.println("The blue face with white on the bottom:");
         for(int x = 0; x < blue.length;x++){
             for(int y = 0; y < blue[0].length;y++){
-                if(x != 1 && y !=  1){
-                    blue[x][y] = scn.nextLine();
+                if(x == 1 && y ==  1){
+                    blue[1][1] = "b";
                 }
                 else{
-                    blue[1][1] = "b";
+                    blue[x][y] = scn.nextLine();
                 }
             }
         }
@@ -35,11 +36,11 @@ public class main{
         System.out.println("The yellow face with blue on the bottom:");
         for(int x = 0; x < yellow.length;x++){
             for(int y = 0; y < yellow[0].length;y++){
-                if(x != 1 && y !=  1){
-                    yellow[x][y] = scn.nextLine();
+                if(x == 1 && y ==  1){
+                    yellow[1][1] = "y";
                 }
                 else{
-                    yellow[1][1] = "y";
+                    yellow[x][y] = scn.nextLine();
                 }
             }
         }
@@ -48,11 +49,11 @@ public class main{
         System.out.println("The green face with yellow on the bottom:");
         for(int x = 0; x < green.length;x++){
             for(int y = 0; y < green[0].length;y++){
-                if(x != 1 && y !=  1){
-                    green[x][y] = scn.nextLine();
+                if(x == 1 && y ==  1){
+                    green[1][1] = "g";
                 }
                 else{
-                    green[1][1] = "g";
+                    green[x][y] = scn.nextLine();
                 }
             }
         }
@@ -61,11 +62,11 @@ public class main{
         System.out.println("The orange face with yellow on the bottom:");
         for(int x = 0; x < orange.length;x++){
             for(int y = 0; y < orange[0].length;y++){
-                if(x != 1 && y !=  1){
-                    orange[x][y] = scn.nextLine();
+                if(x == 1 && y ==  1){
+                    orange[1][1] = "o";
                 }
                 else{
-                    orange[1][1] = "o";
+                    orange[x][y] = scn.nextLine();
                 }
             }
         }
@@ -74,39 +75,24 @@ public class main{
         System.out.println("The red face with yellow on the bottom:");
         for(int x = 0; x < red.length;x++){
             for(int y = 0; y < red[0].length;y++){
-                if(x != 1 && y !=  1){
-                    red[x][y] = scn.nextLine();
+                if(x == 1 && y ==  1){
+                    red[1][1] = "r";
                 }
                 else{
-                    red[1][1] = "r";
+                    red[x][y] = scn.nextLine();
                 }
             }
         }
         String[][][] cube = new String[][][]{white,blue,yellow,green,orange,red};
-        
+        System.out.println("IsSolved: "+checkSolved(cube));
     }
-    public boolean checkSolved(String[][][] cube){
+    public static boolean checkSolved(String[][][] cube){
         //white,blue,yellow,green,orange,red
         for(int i = 0; i < cube.length; i++){
             for(int x = 0; x < cube[i].length;x++){
                 for(int y = 0; y < cube[i][x].length;y++){
-                    if(i==0){
-                        
-                    }
-                    else if(i==1){
-                        
-                    }
-                    else if(i==2){
-                    
-                    }
-                    else if(i==3){
-                        
-                    }
-                    else if(i==4){
-                        
-                    }
-                    else{
-                        
+                    if((i==0 && !cube[i][x][y].equals("w"))||(i==1 && !cube[i][x][y].equals("b"))||(i==2 && !cube[i][x][y].equals("y"))||(i==3 && !cube[i][x][y].equals("g"))||(i==4 && !cube[i][x][y].equals("o"))||(i==5 && !cube[i][x][y].equals("w"))){
+                        return false;
                     }
                 }
             }
