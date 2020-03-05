@@ -87,13 +87,18 @@ public class main{
         */
         //String[][][] cube = new String[][][]{white,blue,yellow,green,orange,red};
         String[][][] cube = solvedCube;
-        System.out.println("IsSolved: "+checkSolved(cube));
         printCube(cube);
+        System.out.println("--------------------------------");
         while(true){
             String movement = scn.nextLine();
             cube = move(cube,movement);
             System.out.println("Moved the cube: "+movement);
             printCube(cube);
+            System.out.println("Has second layer solved: "+checkSecondLayer(cube));
+            System.out.println("Has first layer: "+checkBottomLayer(cube));
+            System.out.println("Has a white cross: "+checkWhiteCross(cube));
+            System.out.println("Is solved: "+checkSolved(cube));
+            System.out.println("--------------------------------");
         }
     }
     public static void printCube(String[][][] cube){
@@ -106,6 +111,50 @@ public class main{
             }
             System.out.println("\n");
         }
+    }
+    public static boolean checkSecondLayer(String[][][] c){
+        if(!c[5][0][1].equals("r") || !c[5][2][1].equals("r") || !c[3][0][1].equals("g") || !c[3][2][1].equals("g") || !c[4][0][1].equals("o") || !c[4][2][1].equals("o") || !c[1][0][1].equals("b") || !c[1][2][1].equals("b")){
+            return false;
+        }
+        return true;
+    }
+    public static boolean checkWhiteCross(String[][][] c){
+        if(!c[0][1][0].equals("w") || !c[0][1][2].equals("w") || !c[0][0][1].equals("w") || !c[0][2][1].equals("w") ){
+            return false;
+        }
+        return true;
+    }
+    public static boolean checkBottomLayer(String[][][] c){
+        if(!c[0][0][0].equals("w") || !c[5][0][2].equals("r") || !c[0][1][0].equals("w") || !c[5][1][2].equals("r") || !c[0][2][0].equals("w") || !c[5][2][2].equals("r")){
+            return false;
+        }
+        if(!c[0][0][0].equals("w") || !c[1][2][2].equals("b") || !c[0][0][1].equals("w") || !c[1][1][2].equals("b") || !c[0][0][2].equals("w") || !c[1][0][2].equals("b")){
+            return false;
+        }
+        if(!c[0][2][0].equals("w") || !c[3][0][2].equals("g") || !c[0][2][1].equals("w") || !c[3][1][2].equals("g") || !c[0][2][2].equals("w") || !c[3][2][2].equals("g")){
+            return false;
+        }
+        if(!c[0][1][2].equals("w") || !c[4][2][2].equals("o") || !c[0][1][2].equals("w") || !c[4][1][2].equals("o") || !c[0][0][2].equals("w") || !c[4][0][2].equals("o")){
+            return false;
+        }
+        return true;
+    }
+    public static String[][] rotate(String dir,String[][] face){
+        int[][] order = new int[8][2];
+        if(dir.equals("clock wise")){
+            order = new int[][]{{0,0},{1,0},{2,0},{2,1},{2,2},{1,2},{0,2},{0,1}};
+        }
+        else{
+            order = new int[][]{{0,0},{0,1},{0,2},{1,2},{2,2},{2,1},{2,0},{1,0}};
+        }
+        String replace = face[order[0][0]][order[0][1]];
+        for(int i = 0; i < order.length-1; i++){
+            String temp = face[order[i+1][0]][order[i+1][1]];
+            face[order[i+1][0]][order[i+1][1]] = replace;
+            replace = temp;
+        } 
+        face[order[0][0]][order[0][1]] = replace;
+        return face;
     }
     //assumes yellow is on top && looking at red face
     //order white,blue,yellow,green,orange,red  
@@ -128,6 +177,12 @@ public class main{
             c[5][0][0] = temp[0];
             c[5][1][0] = temp[1];
             c[5][2][0] = temp[2];
+            c[2] = rotate("clock wise",c[2]);
+            c[2] = rotate("clock wise",c[2]);
+        }
+        else if(move.equals("U2")){
+            c = move(c,"U");
+            c = move(c,"U");
         }
         else if(move.equals("D")){
             int[] top = new int[]{5,3,4,1};
@@ -142,9 +197,15 @@ public class main{
             c[5][0][2] = temp[0];
             c[5][1][2] = temp[1];
             c[5][2][2] = temp[2];
+            c[0] = rotate("clock wise",c[0]);
+            c[0] = rotate("clock wise",c[0]);
         }
         else if(move.equals("D'")){
             c = move(c,"D");
+            c = move(c,"D");
+            c = move(c,"D");
+        }
+        else if(move.equals("D2")){
             c = move(c,"D");
             c = move(c,"D");
         }
@@ -161,9 +222,15 @@ public class main{
             c[5][2][0] = temp[0];
             c[5][2][1] = temp[1];
             c[5][2][2] = temp[2];
+            c[3] = rotate("clock wise",c[3]);
+            c[3] = rotate("clock wise",c[3]);
         }
         else if(move.equals("R'")){
             c = move(c,"R");
+            c = move(c,"R");
+            c = move(c,"R");
+        }
+        else if(move.equals("R2")){
             c = move(c,"R");
             c = move(c,"R");
         }
@@ -180,14 +247,24 @@ public class main{
             c[front[0]][0][2] = temp[0];
             c[front[0]][1][2] = temp[1];
             c[front[0]][2][2] = temp[2];
+            c[5] = rotate("clock wise",c[5]);
+            c[5] = rotate("clock wise",c[5]);
         }
         else if(move.equals("F'")){
             c = move(c,"F");
             c = move(c,"F");
             c = move(c,"F");
         }
+        else if(move.equals("F2")){
+            c = move(c,"F");
+            c = move(c,"F");
+        }
         else if(move.equals("B'")){
             c = move(c,"B");
+            c = move(c,"B");
+            c = move(c,"B");
+        }
+        else if(move.equals("B2")){
             c = move(c,"B");
             c = move(c,"B");
         }
@@ -204,6 +281,8 @@ public class main{
             c[front[0]][0][0] = temp[0];
             c[front[0]][1][0] = temp[1];
             c[front[0]][2][0] = temp[2];
+            c[4] = rotate("clock wise",c[4]);
+            c[4] = rotate("clock wise",c[4]);
         }
         else if(move.equals("x")){
             int[] order = new int[]{5,2,4,0};
@@ -220,6 +299,69 @@ public class main{
             c = move(c,"x");
             c = move(c,"x");
         }
+        else if(move.equals("y")){
+            int[] order = new int[]{5,1,4,3};
+            String temp[][] = c[order[0]].clone();
+            for(int i = 0; i < order.length-1;i++){
+                String[][] replace = c[order[i+1]];
+                c[order[i+1]] = temp;
+                temp = replace;
+            }
+            c[order[0]] = temp;
+        }
+        else if(move.equals("y'")){
+            c = move(c,"y");
+            c = move(c,"y");
+            c = move(c,"y");
+        }
+        else if(move.equals("L")){
+            int[] right = new int[]{5,0,4,2};
+            String[] temp = new String[] {c[right[0]][0][0],c[right[0]][0][1],c[right[0]][0][2]};
+            for(int i = 0; i < right.length-1;i++){
+                String[] replaced = new String[]{c[right[i+1]][0][0],c[right[i+1]][0][1],c[right[i+1]][0][2]};
+                c[right[i+1]][0][0] = temp[0];
+                c[right[i+1]][0][1] = temp[1];
+                c[right[i+1]][0][2] = temp[2];
+                temp = replaced;
+            } 
+            c[5][0][0] = temp[0];
+            c[5][0][1] = temp[1];
+            c[5][0][2] = temp[2];
+            c[1] = rotate("clock wise",c[1]);
+            c[1] = rotate("clock wise",c[1]);
+        }
+        else if(move.equals("L'")){
+            c = move(c,"L");
+            c = move(c,"L");
+            c = move(c,"L");
+        }
+        else if(move.equals("L2")){
+            c = move(c,"L");
+            c = move(c,"L");
+        }
+        else if(move.equals("M")){
+            c = move(c,"L");
+            c = move(c,"R'");
+            c = move(c,"x");
+        }
+        else if(move.equals("M'")){
+            c = move(c,"M");
+            c = move(c,"M");
+            c = move(c,"M");
+        }
+        else if(move.equals("M2")){
+            c = move(c,"M");
+            c = move(c,"M");
+        }
+        else if(move.equals("r")){
+            c = move(c,"M");
+            c = move(c,"R");
+        }
+        else if(move.equals("r'")){
+            c = move(c,"r");
+            c = move(c,"r");
+            c = move(c,"r");
+        }
         return c;
     }
     public static boolean checkSolved(String[][][] cube){
@@ -228,7 +370,7 @@ public class main{
             for(int x = 0; x < cube[i].length;x++){
                 for(int y = 0; y < cube[i][x].length;y++){
                     if((i==0 && !cube[i][x][y].equals("w"))||(i==1 && !cube[i][x][y].equals("b"))||(i==2 && !cube[i][x][y].equals("y"))||(i==3 && !cube[i][x][y].equals("g"))||(i==4 && !cube[i][x][y].equals("o"))||(i==5 && !cube[i][x][y].equals("r"))){
-                        System.out.println("Face: "+i);
+                        //System.out.println("Face: "+i);
                         return false;
                     }
                 }
