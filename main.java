@@ -1,13 +1,13 @@
 import java.util.*;
 public class main{
     public static void main(String[] args){
-        String[][][] solvedCube = new String[][][]{{{"w","w","w"},{"w","w","w"},{"w","w","w"}},{{"b","b","b"},{"b","b","b"},{"b","b","b"}},{{"y","y","y"},{"y","y","y"},{"y","y","y"}},{{"g","g","g"},{"g","g","g"},{"g","g","g"}},{{"o","o","o"},{"o","o","o"},{"o","o","o"}},{{"r","r","r"},{"r","r","r"},{"r","r","r"}}};
+        String[][][] solvedCube = new String[][][]{{{"U","U","V"},{"X","w","V"},{"X","W","W"}},{{"E","E","F"},{"H","b","F"},{"H","G","G"}},{{"A","A","B"},{"D","y","B"},{"D","C","C"}},{{"M","M","N"},{"P","g","N"},{"P","O","O"}},{{"Q","Q","R"},{"T","o","R"},{"T","S","S"}},{{"I","I","J"},{"L","r","J"},{"L","K","K"}}};
         Scanner scn = new Scanner(System.in);
         /*
         System.out.println("Enter the positions of the colors on the cube(r,g,w,b,o,y):");
         //green on bottom
         String[][] white = new String[3][3];
-        System.out.println("Starting on the white face with green on the bottom:");
+        System.out.println("Starting on the white face with orange on the bottom:");
         for(int x = 0; x < white.length;x++){
             for(int y = 0; y < white[0].length;y++){
                 System.out.println("X: "+x+"Y: "+y);
@@ -34,7 +34,7 @@ public class main{
         }
         //blue on bottom
         String[][] yellow = new String[3][3];
-        System.out.println("The yellow face with blue on the bottom:");
+        System.out.println("The yellow face with red on the bottom:");
         for(int x = 0; x < yellow.length;x++){
             for(int y = 0; y < yellow[0].length;y++){
                 if(x == 1 && y ==  1){
@@ -47,7 +47,7 @@ public class main{
         }
         //yellow on bottom
         String[][] green = new String[3][3];
-        System.out.println("The green face with yellow on the bottom:");
+        System.out.println("The white face with yellow on the bottom:");
         for(int x = 0; x < green.length;x++){
             for(int y = 0; y < green[0].length;y++){
                 if(x == 1 && y ==  1){
@@ -60,7 +60,7 @@ public class main{
         }
         //yellow on bottom
         String[][] orange = new String[3][3];
-        System.out.println("The orange face with yellow on the bottom:");
+        System.out.println("The orange face with white on the bottom:");
         for(int x = 0; x < orange.length;x++){
             for(int y = 0; y < orange[0].length;y++){
                 if(x == 1 && y ==  1){
@@ -73,7 +73,7 @@ public class main{
         }
         //yellow on bottom
         String[][] red = new String[3][3];
-        System.out.println("The red face with yellow on the bottom:");
+        System.out.println("The red face with white on the bottom:");
         for(int x = 0; x < red.length;x++){
             for(int y = 0; y < red[0].length;y++){
                 if(x == 1 && y ==  1){
@@ -105,7 +105,7 @@ public class main{
         for(String[][] face: cube){
             for(int y = 0; y < face[0].length; y++){
                 for(int x = 0; x < face.length; x++){
-                    System.out.print(face[x][y]+" ");
+                    System.out.print(face[y][x]+" ");
                 }
                 System.out.println();
             }
@@ -210,20 +210,60 @@ public class main{
             c = move(c,"D");
         }
         else if(move.equals("R")){
+            //order white,blue,yellow,green,orange,red
+            String[][][] cube = c.clone();
+            String[] red = new String[]{c[0][0][2],c[0][1][2],c[0][2][2]};
+            String[] yellow = new String[]{c[5][0][2],c[5][1][2],c[5][2][2]};
+            String[] orange = new String[]{c[2][2][2],c[2][1][2],c[2][0][2]};
+            String[] white = new String[]{c[4][0][0],c[4][1][0],c[4][2][0]};
+            c[5][0][2] = red[0];
+            c[5][1][2] = red[1];
+            c[5][2][2] = red[2];
+            
+            c[2][0][2] = yellow[0];
+            c[2][1][2] = yellow[1];
+            c[2][2][2] = yellow[2];
+            
+            c[4][0][0] = orange[0];
+            c[4][1][0] = orange[1];
+            c[4][2][0] = orange[2];
+            
+            c[0][0][2] = white[2];
+            c[0][1][2] = white[1];
+            c[0][2][2] = white[0];
+            
+            c = cube;
+            /*
             int[] right = new int[]{5,2,4,0};
             String[] temp = new String[] {c[right[0]][2][0],c[right[0]][2][1],c[right[0]][2][2]};
             for(int i = 0; i < right.length-1;i++){
-                String[] replaced = new String[]{c[right[i+1]][2][0],c[right[i+1]][2][1],c[right[i+1]][2][2]};
-                c[right[i+1]][2][0] = temp[0];
-                c[right[i+1]][2][1] = temp[1];
-                c[right[i+1]][2][2] = temp[2];
-                temp = replaced;
+                String[] replaced = new String[3];
+                if(i!=1){
+                    replaced = new String[]{c[right[i+1]][2][0],c[right[i+1]][2][1],c[right[i+1]][2][2]};
+                }
+                else{
+                    replaced = new String[]{c[right[i+1]][0][2],c[right[i+1]][0][1],c[right[i+1]][0][0]};
+                }
+                if(i!=1){
+                    c[right[i+1]][2][0] = temp[0];
+                    c[right[i+1]][2][1] = temp[1];
+                    c[right[i+1]][2][2] = temp[2];
+                    temp = replaced;
+                }
+                else{
+                    c[right[i+1]][0][0] = temp[0];
+                    c[right[i+1]][0][1] = temp[1];
+                    c[right[i+1]][0][2] = temp[2];
+                    temp = replaced;
+                }
             }
             c[5][2][0] = temp[0];
             c[5][2][1] = temp[1];
             c[5][2][2] = temp[2];
-            c[3] = rotate("clock wise",c[3]);
-            c[3] = rotate("clock wise",c[3]);
+            */
+            c[3] = rotate("counterclock wise",c[3]);
+            c[3] = rotate("counterclock wise",c[3]);
+            
         }
         else if(move.equals("R'")){
             c = move(c,"R");
@@ -238,7 +278,19 @@ public class main{
             int[] front = new int[]{2,3,0,1};
             String[] temp = new String[] {c[front[0]][0][2],c[front[0]][1][2],c[front[0]][2][2]};
             for(int i = 0; i < front.length-1;i++){
-                String[] replaced = new String[]{c[front[i+1]][2][2],c[front[i+1]][2][2],c[front[i+1]][2][2]};
+                String[] replaced = new String[3];
+                if(i == 0){
+                    replaced = new String[]{c[front[0]][0][2],c[front[0]][1][2],c[front[0]][2][2]};
+                }
+                else if(i == 1){
+                    replaced = new String[]{c[front[0]][0][0],c[front[0]][0][1],c[front[0]][2][0]};
+                }
+                else if(i == 2){
+                    replaced = new String[]{c[front[0]][0][0],c[front[0]][1][0],c[front[0]][2][0]};
+                }
+                else{
+                    replaced = new String[]{c[front[0]][2][0],c[front[0]][2][1],c[front[0]][2][2]};
+                }
                 c[front[i+1]][0][2] = temp[0];
                 c[front[i+1]][1][2] = temp[1];
                 c[front[i+1]][2][2] = temp[2];
