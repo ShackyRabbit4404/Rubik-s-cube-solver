@@ -98,6 +98,7 @@ public class main{
             System.out.println("Has second layer solved: "+checkSecondLayer(cube));
             System.out.println("Has first layer: "+checkBottomLayer(cube));
             System.out.println("Has a white cross: "+checkWhiteCross(cube));
+            System.out.println("Has second layer: "+checkSecondLayer(cube));
             System.out.println("Is solved: "+checkSolved(cube));
             System.out.println("--------------------------------");
         }
@@ -114,7 +115,7 @@ public class main{
         }
     }
     public static boolean checkSecondLayer(String[][][] c){
-        if(!c[5][0][1].equals("r") || !c[5][2][1].equals("r") || !c[3][0][1].equals("g") || !c[3][2][1].equals("g") || !c[4][0][1].equals("o") || !c[4][2][1].equals("o") || !c[1][0][1].equals("b") || !c[1][2][1].equals("b")){
+        if(!c[5][1][0].equals("r") || !c[5][1][2].equals("r") || !c[3][1][0].equals("g") || !c[3][1][2].equals("g") || !c[4][1][0].equals("o") || !c[4][1][2].equals("o") || !c[1][1][0].equals("b") || !c[1][1][2].equals("b")){
             return false;
         }
         return true;
@@ -123,19 +124,22 @@ public class main{
         if(!c[0][1][0].equals("w") || !c[0][1][2].equals("w") || !c[0][0][1].equals("w") || !c[0][2][1].equals("w") ){
             return false;
         }
+        if(!c[5][2][1].equals("r") || !c[1][2][1].equals("b") || !c[3][2][1].equals("g") || !c[4][2][1].equals("o")){
+            return false;
+        }
         return true;
     }
     public static boolean checkBottomLayer(String[][][] c){
-        if(!c[0][0][0].equals("w") || !c[5][0][2].equals("r") || !c[0][1][0].equals("w") || !c[5][1][2].equals("r") || !c[0][2][0].equals("w") || !c[5][2][2].equals("r")){
+        if(!c[0][0][0].equals("w") || !c[5][2][0].equals("r") || !c[0][0][1].equals("w") || !c[5][2][1].equals("r") || !c[0][0][1].equals("w") || !c[5][2][2].equals("r")){
             return false;
         }
-        if(!c[0][0][0].equals("w") || !c[1][2][2].equals("b") || !c[0][0][1].equals("w") || !c[1][1][2].equals("b") || !c[0][0][2].equals("w") || !c[1][0][2].equals("b")){
+        if(!c[0][0][0].equals("w") || !c[1][2][2].equals("b") || !c[0][1][0].equals("w") || !c[1][2][1].equals("b") || !c[0][2][0].equals("w") || !c[1][2][0].equals("b")){
             return false;
         }
-        if(!c[0][2][0].equals("w") || !c[3][0][2].equals("g") || !c[0][2][1].equals("w") || !c[3][1][2].equals("g") || !c[0][2][2].equals("w") || !c[3][2][2].equals("g")){
+        if(!c[0][0][2].equals("w") || !c[3][2][0].equals("g") || !c[0][1][2].equals("w") || !c[3][2][1].equals("g") || !c[0][2][2].equals("w") || !c[3][2][2].equals("g")){
             return false;
         }
-        if(!c[0][1][2].equals("w") || !c[4][2][2].equals("o") || !c[0][1][2].equals("w") || !c[4][1][2].equals("o") || !c[0][0][2].equals("w") || !c[4][0][2].equals("o")){
+        if(!c[0][2][0].equals("w") || !c[4][2][2].equals("o") || !c[0][2][1].equals("w") || !c[4][2][1].equals("o") || !c[0][2][2].equals("w") || !c[4][2][0].equals("o")){
             return false;
         }
         return true;
