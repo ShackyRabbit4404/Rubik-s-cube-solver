@@ -146,21 +146,46 @@ public class main{
         for(int i = 0; i < 4; i++){
             String loc = findEdge(pieces[i].substring(0,1),"w",cube);
             String face = getFace(loc);
-            if(isEdgeInTopRow(loc)){
-                if(face.equals("U")){
-                    while(!getFace(findEdge("w",pieces[i].substring(0,1),cube)).equals("F")){
-                        cube = move(cube,"U");
-                        loc = findEdge(pieces[i].substring(0,1),"w",cube);
-                        face = getFace(loc);
-                        moves += "U ";
-                    }
-                    cube = move(cube,"F");
-                    cube = move(cube,"R");
-                    cube = move(cube,"U'");
-                    cube = move(cube,"R'");
-                    cube = move(cube,"F'");
-                    moves += "F R U' R' F'";
+            System.out.println("Location of edge piece: "+loc+" Face it's on: "+face);
+            if(face.equals("D")){
+                cube = move(cube,face+"2");
+                loc = findEdge(pieces[i].substring(0,1),"w",cube);
+                face = "U";
+                moves += face+"2 ";
+            }
+            if(isEdgeInMidRow(loc)){
+                int count = 0;
+                while(!isEdgeInTopRow(loc)){
+                    cube = move(cube,face);
+                    count++;
+                    loc = findEdge(pieces[i].substring(0,1),"w",cube);
+                    moves += face+" ";
                 }
+                cube = move(cube,"U");
+                moves += "U ";
+                
+                for(int a = 0; a < count; a++){
+                    cube = move(cube,face+"'");
+                    moves += face+"' ";
+                }
+                loc = findEdge(pieces[i].substring(0,1),"w",cube);
+                face = getFace(loc);
+            }
+            if(face.equals("U")){
+                while(!getFace(findEdge("w",pieces[i].substring(0,1),cube)).equals("F")){
+                    cube = move(cube,"U");
+                    loc = findEdge(pieces[i].substring(0,1),"w",cube);
+                    face = getFace(loc);
+                    moves += "U ";
+                }
+                cube = move(cube,"F");
+                cube = move(cube,"R");
+                cube = move(cube,"U'");
+                cube = move(cube,"R'");
+                cube = move(cube,"F'");
+                moves += "F R U' R' F' ";
+            }
+            if(isEdgeInTopRow(loc)){
                 String target = getFace(findEdge(pieces[i].substring(0,1),"w",solvedCube));
                 System.out.println("Target Face: "+target+" Current Face: "+face);
                 while(!target.equals(face)){
@@ -171,12 +196,6 @@ public class main{
                 }
                 cube = move(cube,face+"2");
                 moves += face+"2 ";
-            }
-            else if(isEdgeInMidRow(loc)){
-                
-            }
-            else {
-                
             }
         }
         System.out.println("Solve White Cross: "+moves);
