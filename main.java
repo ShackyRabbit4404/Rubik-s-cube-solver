@@ -1,8 +1,9 @@
 import java.util.*;
 public class main{
     public static void main(String[] args){
-        //String[][][] solvedCube = new String[][][]{{{"U","U","V"},{"X","w","V"},{"X","W","W"}},{{"E","E","F"},{"H","b","F"},{"H","G","G"}},{{"A","A","B"},{"D","y","B"},{"D","C","C"}},{{"M","M","N"},{"P","g","N"},{"P","O","O"}},{{"Q","Q","R"},{"T","o","R"},{"T","S","S"}},{{"I","I","J"},{"L","r","J"},{"L","K","K"}}};
+        String[][][] locationCube = new String[][][]{{{"U","U","V"},{"X","w","V"},{"X","W","W"}},{{"E","E","F"},{"H","b","F"},{"H","G","G"}},{{"A","A","B"},{"D","y","B"},{"D","C","C"}},{{"M","M","N"},{"P","g","N"},{"P","O","O"}},{{"Q","Q","R"},{"T","o","R"},{"T","S","S"}},{{"I","I","J"},{"L","r","J"},{"L","K","K"}}};
         String[][][] solvedCube = new String[][][]{{{"w","w","w"},{"w","w","w"},{"w","w","w"}},{{"b","b","b"},{"b","b","b"},{"b","b","b"}},{{"y","y","y"},{"y","y","y"},{"y","y","y"}},{{"g","g","g"},{"g","g","g"},{"g","g","g"}},{{"o","o","o"},{"o","o","o"},{"o","o","o"}},{{"r","r","r"},{"r","r","r"},{"r","r","r"}}};
+        
         Scanner scn = new Scanner(System.in);
         /*
         System.out.println("Enter the positions of the colors on the cube(r,g,w,b,o,y):");
@@ -100,8 +101,116 @@ public class main{
             System.out.println("Has a white cross: "+checkWhiteCross(cube));
             System.out.println("Has second layer: "+checkSecondLayer(cube));
             System.out.println("Is solved: "+checkSolved(cube));
+            solveWhiteCross(cloneCube(cube));
             System.out.println("--------------------------------");
         }
+    }
+    public static String findEdge(String sideOne, String sideTwo,String[][][] cube){
+        String[][][] locationCube = new String[][][]{{{"U","U","V"},{"X","w","V"},{"X","W","W"}},{{"E","E","F"},{"H","b","F"},{"H","G","G"}},{{"A","A","B"},{"D","y","B"},{"D","C","C"}},{{"M","M","N"},{"P","g","N"},{"P","O","O"}},{{"Q","Q","R"},{"T","o","R"},{"T","S","S"}},{{"I","I","J"},{"L","r","J"},{"L","K","K"}}};
+        String[] edgePieces = new String[]{"AQ","BM","CI","DE","NT","JP","FL","RH","KU","OV","SW","GX"};
+        String[] locsOne = new String[4];
+        int oneCount = 0;
+        String[] locsTwo = new String[4];
+        int twoCount = 0;
+        for(int face = 0; face < cube.length;face++){
+            for(int row = 0; row< cube[face].length;row++){
+                for(int col = 0; col < cube[face][row].length;col++){
+                    if(row != col && !(row == 0 && col == 2) && !(row == 2 && col == 0)){
+                        if(cube[face][row][col].equals(sideOne)){
+                            locsOne[oneCount] = locationCube[face][row][col];
+                            oneCount++;
+                        }
+                        else if(cube[face][row][col].equals(sideTwo)){
+                            locsTwo[twoCount] = locationCube[face][row][col];
+                            twoCount++;
+                        }
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < locsOne.length; i++){
+            for(int a = 0; a < locsTwo.length; a++){
+                for(String edge:edgePieces){
+                    if(edge.contains(locsOne[i]) && edge.contains(locsTwo[a])){
+                        return locsOne[i];
+                    }
+                }
+            }
+        }
+        return "ERROR: piece does not exist";
+    }
+    public static String[][][] solveWhiteCross(String[][][] cube){
+        String[][][] solvedCube = new String[][][]{{{"w","w","w"},{"w","w","w"},{"w","w","w"}},{{"b","b","b"},{"b","b","b"},{"b","b","b"}},{{"y","y","y"},{"y","y","y"},{"y","y","y"}},{{"g","g","g"},{"g","g","g"},{"g","g","g"}},{{"o","o","o"},{"o","o","o"},{"o","o","o"}},{{"r","r","r"},{"r","r","r"},{"r","r","r"}}};
+        String[] pieces = new String[]{"rw","bw","ow","gw"};
+        String moves = "";
+        for(int i = 0; i < 4; i++){
+            String loc = findEdge(pieces[i].substring(0,1),"w",cube);
+            String face = getFace(loc);
+            if(isEdgeInTopRow(loc)){
+                if(face.equals("U")){
+                    while(!getFace(findEdge("w",pieces[i].substring(0,1),cube)).equals("F")){
+                        cube = move(cube,"U");
+                        loc = findEdge(pieces[i].substring(0,1),"w",cube);
+                        face = getFace(loc);
+                        moves += "U ";
+                    }
+                    cube = move(cube,"F");
+                    cube = move(cube,"R");
+                    cube = move(cube,"U'");
+                    cube = move(cube,"R'");
+                    cube = move(cube,"F'");
+                    moves += "F R U' R' F'";
+                }
+                String target = getFace(findEdge(pieces[i].substring(0,1),"w",solvedCube));
+                System.out.println("Target Face: "+target+" Current Face: "+face);
+                while(!target.equals(face)){
+                    cube = move(cube,"U");
+                    loc = findEdge(pieces[i].substring(0,1),"w",cube);
+                    face = getFace(loc);
+                    moves += "U ";
+                }
+                cube = move(cube,face+"2");
+                moves += face+"2 ";
+            }
+            else if(isEdgeInMidRow(loc)){
+                
+            }
+            else {
+                
+            }
+        }
+        System.out.println("Solve White Cross: "+moves);
+        return cube;
+    }
+    public static String getFace(String loc){
+        if(loc.equals("A") || loc.equals("B") || loc.equals("C") || loc.equals("D")){
+            return "U";
+        }
+        else if(loc.equals("E") || loc.equals("F") || loc.equals("G") || loc.equals("H")){
+            return "L";
+        }
+        else if(loc.equals("I") || loc.equals("J") || loc.equals("K") || loc.equals("L")){
+            return "F";
+        }
+        else if(loc.equals("M") || loc.equals("N") || loc.equals("O") || loc.equals("P")){
+            return "R";
+        }
+        else if(loc.equals("Q") || loc.equals("R") || loc.equals("S") || loc.equals("T")){
+            return "B";
+        }
+        return "D";
+    }
+    public static boolean isEdgeInTopRow(String loc){
+        if(loc.equals("A") || loc.equals("B") || loc.equals("C") || loc.equals("D") || loc.equals("M") || loc.equals("Q") || loc.equals("E") || loc.equals("I")){
+            return true;
+        }
+        return false;
+    }
+    public static boolean isEdgeInMidRow(String loc){
+        if(loc.equals("F") || loc.equals("L") || loc.equals("J") || loc.equals("P") || loc.equals("N") || loc.equals("T") || loc.equals("R") || loc.equals("H") ){
+            return true;
+        }
+        return false;
     }
     public static void printCube(String[][][] cube){
         for(String[][] face: cube){
@@ -143,6 +252,17 @@ public class main{
             return false;
         }
         return true;
+    }
+    public static String[][][] cloneCube(String[][][] cube){
+        String[][][] c = new String[cube.length][cube[0].length][cube[0][0].length];
+        for(int a = 0;  a < c.length; a++){
+            for(int b = 0; b < c[0].length; b++){
+                for(int d = 0; d < c[0][0].length; d++){
+                    c[a][b][d] = cube[a][b][d];
+                }
+            }
+        }
+        return c;
     }
     public static String[][] rotate(String dir,String[][] face){
         int[][] order = new int[8][2];
@@ -312,20 +432,30 @@ public class main{
             c = move(c,"B");
         }
         else if(move.equals("B")){
-            int[] front = new int[]{2,1,0,3};
-            String[] temp = new String[] {c[front[0]][0][0],c[front[0]][1][0],c[front[0]][2][0]};
-            for(int i = 0; i < front.length-1;i++){
-                String[] replaced = new String[]{c[front[i+1]][2][0],c[front[i+1]][2][0],c[front[i+1]][2][0]};
-                c[front[i+1]][0][0] = temp[0];
-                c[front[i+1]][1][0] = temp[1];
-                c[front[i+1]][2][0] = temp[2];
-                temp = replaced;
-            }
-            c[front[0]][0][0] = temp[0];
-            c[front[0]][1][0] = temp[1];
-            c[front[0]][2][0] = temp[2];
-            c[4] = rotate("clock wise",c[4]);
-            c[4] = rotate("clock wise",c[4]);
+           //order white,blue,yellow,green,orange,red
+            String[] yellow = new String[]{c[3][0][2],c[3][1][2],c[3][2][2]};
+            String[] blue = new String[]{c[2][0][2],c[2][0][1],c[2][0][0]};
+            String[] white = new String[]{c[1][0][0],c[1][1][0],c[1][2][0]};
+            String[] green = new String[]{c[0][2][2],c[0][2][1],c[0][2][0]};
+            
+            c[2][0][0] = yellow[0];
+            c[2][0][1] = yellow[1];
+            c[2][0][2] = yellow[2];
+            
+            c[1][0][0] = blue[0];
+            c[1][1][0] = blue[1];
+            c[1][2][0] = blue[2];
+            
+            c[0][2][0] = white[0];
+            c[0][2][1] = white[1];
+            c[0][2][2] = white[2];
+            
+            c[3][0][2] = green[0];
+            c[3][1][2] = green[1];
+            c[3][2][2] = green[2];
+            
+            c[4] = rotate("counterclock wise",c[4]);
+            c[4] = rotate("counterclock wise",c[4]);
         }
         else if(move.equals("x")){
             int[] order = new int[]{5,2,4,0};
