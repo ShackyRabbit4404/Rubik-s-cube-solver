@@ -139,19 +139,31 @@ public class main{
         }
         return "ERROR: piece does not exist";
     }
+    public static String[][][] solveWhiteCorners(String[][][] cube){
+        return cube;
+    }
     public static String[][][] solveWhiteCross(String[][][] cube){
         String[][][] solvedCube = new String[][][]{{{"w","w","w"},{"w","w","w"},{"w","w","w"}},{{"b","b","b"},{"b","b","b"},{"b","b","b"}},{{"y","y","y"},{"y","y","y"},{"y","y","y"}},{{"g","g","g"},{"g","g","g"},{"g","g","g"}},{{"o","o","o"},{"o","o","o"},{"o","o","o"}},{{"r","r","r"},{"r","r","r"},{"r","r","r"}}};
         String[] pieces = new String[]{"rw","bw","ow","gw"};
         String moves = "";
+        int pieceStart = 0;
         for(int i = 0; i < 4; i++){
+            pieceStart = moves.length();
             String loc = findEdge(pieces[i].substring(0,1),"w",cube);
             String face = getFace(loc);
-            System.out.println("Location of edge piece: "+loc+" Face it's on: "+face);
-            if(face.equals("D")){
+            //System.out.println("Location of edge piece: "+loc+" Face it's on: "+face);
+            if(isEdgeInBottomRow(loc) && !isEdgeInCorrectSpot(pieces[i].substring(0,1),pieces[i].substring(1),cube) && !face.equals("D")){
                 cube = move(cube,face+"2");
                 loc = findEdge(pieces[i].substring(0,1),"w",cube);
-                face = "U";
+                face = getFace(loc);
                 moves += face+"2 ";
+            }
+            else if(isEdgeInBottomRow(loc) && !isEdgeInCorrectSpot(pieces[i].substring(0,1),pieces[i].substring(1),cube)){
+                String tempFace = getFace(findEdge(pieces[i].substring(1),pieces[i].substring(0,1),cube));
+                cube = move(cube,tempFace+"2");
+                loc = findEdge(pieces[i].substring(0,1),"w",cube);
+                face = getFace(loc);
+                moves += tempFace+"2 ";
             }
             if(isEdgeInMidRow(loc)){
                 int count = 0;
@@ -187,7 +199,7 @@ public class main{
             }
             if(isEdgeInTopRow(loc)){
                 String target = getFace(findEdge(pieces[i].substring(0,1),"w",solvedCube));
-                System.out.println("Target Face: "+target+" Current Face: "+face);
+                //System.out.println("Target Face: "+target+" Current Face: "+face);
                 while(!target.equals(face)){
                     cube = move(cube,"U");
                     loc = findEdge(pieces[i].substring(0,1),"w",cube);
@@ -197,9 +209,32 @@ public class main{
                 cube = move(cube,face+"2");
                 moves += face+"2 ";
             }
+            System.out.println("Piece: "+pieces[i]+" Solve: "+moves.substring(pieceStart));
         }
         System.out.println("Solve White Cross: "+moves);
         return cube;
+    }
+    
+    public static boolean isEdgeInCorrectSpot(String sideOne, String sideTwo, String[][][] cube){
+        String[][][] locationCube = new String[][][]{{{"U","U","V"},{"X","w","V"},{"X","W","W"}},{{"E","E","F"},{"H","b","F"},{"H","G","G"}},{{"A","A","B"},{"D","y","B"},{"D","C","C"}},{{"M","M","N"},{"P","g","N"},{"P","O","O"}},{{"Q","Q","R"},{"T","o","R"},{"T","S","S"}},{{"I","I","J"},{"L","r","J"},{"L","K","K"}}};
+        String[][][] solvedCube = new String[][][]{{{"w","w","w"},{"w","w","w"},{"w","w","w"}},{{"b","b","b"},{"b","b","b"},{"b","b","b"}},{{"y","y","y"},{"y","y","y"},{"y","y","y"}},{{"g","g","g"},{"g","g","g"},{"g","g","g"}},{{"o","o","o"},{"o","o","o"},{"o","o","o"}},{{"r","r","r"},{"r","r","r"},{"r","r","r"}}};
+        if(findEdge(sideOne, sideTwo, cube).equals(findEdge(sideOne,sideTwo,solvedCube)) && findEdge(sideTwo,sideOne,cube).equals(findEdge(sideTwo, sideOne, solvedCube))){
+            return true;
+        }
+        return false;
+    }
+    public static String getEdgeColor(String[][][] cube,String loc){
+        String[][][] locationCube = new String[][][]{{{"U","U","V"},{"X","w","V"},{"X","W","W"}},{{"E","E","F"},{"H","b","F"},{"H","G","G"}},{{"A","A","B"},{"D","y","B"},{"D","C","C"}},{{"M","M","N"},{"P","g","N"},{"P","O","O"}},{{"Q","Q","R"},{"T","o","R"},{"T","S","S"}},{{"I","I","J"},{"L","r","J"},{"L","K","K"}}};
+        for(int face = 0; face < locationCube.length; face++){
+            for(int row = 0; row < locationCube[face].length; row++){
+                for(int col = 0; col < locationCube[face][row].length; col++){
+                    if(locationCube[face][row][col].equals(loc)){
+                        return cube[face][row][col];
+                    }
+                }
+            }
+        }
+        return null;
     }
     public static String getFace(String loc){
         if(loc.equals("A") || loc.equals("B") || loc.equals("C") || loc.equals("D")){
@@ -218,6 +253,12 @@ public class main{
             return "B";
         }
         return "D";
+    }
+    public static boolean isEdgeInBottomRow(String loc){
+        if(loc.equals("U")||loc.equals("V")||loc.equals("W")||loc.equals("X")||loc.equals("K")||loc.equals("O")||loc.equals("S")||loc.equals("G")){
+            return true;
+        }
+        return false;
     }
     public static boolean isEdgeInTopRow(String loc){
         if(loc.equals("A") || loc.equals("B") || loc.equals("C") || loc.equals("D") || loc.equals("M") || loc.equals("Q") || loc.equals("E") || loc.equals("I")){
